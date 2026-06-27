@@ -12,6 +12,10 @@ const bookings = require('./routes/bookingRoutes');
 const favorites = require('./routes/favoriteRoutes');
 const reviews = require('./routes/reviewRoutes');
 const admin = require('./routes/adminRoutes');
+const connectDB = require('./config/db');
+
+// Connect to database (for serverless environments)
+connectDB();
 
 const app = express();
 
@@ -30,7 +34,7 @@ if (process.env.NODE_ENV !== 'production') {
 // Enable CORS
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Local React/Vite development server url
+    origin: true, // Allow request origin dynamically to support credentials/cookies
     credentials: true,
   })
 );

@@ -10,8 +10,8 @@ dotenv.config();
 const app = require('./app');
 const connectDB = require('./config/db');
 
-// Connect to database
-connectDB();
+// Database connection is now initiated in app.js for serverless environment compatibility
+// connectDB();
 
 const PORT = process.env.PORT || 5000;
 
