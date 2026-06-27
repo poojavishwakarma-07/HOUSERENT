@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cors = require('cors');
 const path = require('path');
@@ -39,8 +40,23 @@ app.use(
   })
 );
 
-// Set static folders
+// Serve static folders
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Database connection status middleware (prevents serverless crashes)
+app.use((req, res, next) => {
+  // Allow health checks to pass through even if DB is offline
+  if (req.path === '/health' || req.path === '/api/health') {
+    return next();
+  }
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection is offline or buffering. If you just deployed, please ensure you have whitelisted "0.0.0.0/0" (Allow Access from Anywhere) in your MongoDB Atlas Network Access dashboard so Vercel can connect.'
+    });
+  }
+  next();
+});
 
 // Mount routers
 app.use('/api/auth', auth);

@@ -15,6 +15,10 @@ const connectDB = async () => {
     });
     console.log(`MongoDB Connected to Atlas: ${conn.connection.host}`);
   } catch (error) {
+    if (process.env.VERCEL) {
+      console.error(`MongoDB Atlas connection error on Vercel: ${error.message}`);
+      throw error;
+    }
     console.warn(`\n======================================================`);
     console.warn(`WARNING: Failed to connect to MongoDB Atlas: ${error.message}`);
     console.warn(`This is likely due to MongoDB Atlas IP whitelisting blocking your access.`);
