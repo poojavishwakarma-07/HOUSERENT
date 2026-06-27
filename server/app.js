@@ -16,7 +16,9 @@ const admin = require('./routes/adminRoutes');
 const connectDB = require('./config/db');
 
 // Connect to database (for serverless environments)
-connectDB();
+connectDB().catch((err) => {
+  console.error('Database connection failed on startup:', err.message);
+});
 
 const app = express();
 
